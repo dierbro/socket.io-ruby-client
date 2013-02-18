@@ -125,7 +125,7 @@ module SocketIO
     end
 
     def send_event(name, hash)
-      @transport.send("5:::#{{name: name, args: [hash]}.to_json}") # rescue false
+      @transport.send("5::#{@path}:#{{name: name, args: [hash]}.to_json}") # rescue false
     end
     alias :emit :send_event
 
