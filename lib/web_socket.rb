@@ -333,6 +333,7 @@ class WebSocket
     end
 
     def gets(rs = $/)
+      rs = force_encoding(rs.dup(), "ASCII-8BIT")
       line = @socket.gets(rs)
       $stderr.printf("recv> %p\n", line) if WebSocket.debug
       return line
