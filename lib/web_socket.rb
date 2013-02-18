@@ -166,7 +166,7 @@ class WebSocket
       end
       case @web_socket_version
         when "hixie-75", "hixie-76"
-          data = force_encoding(data.dup(), "UTF-8")
+          data = force_encoding(data.dup(), "ASCII-8BIT")
           write("\x00#{data}\xff")
           flush()
         else
@@ -272,7 +272,7 @@ class WebSocket
             if code == 1005
               payload = ""
             else
-              payload = [code].pack("n") + force_encoding(reason.dup(), "UTF-8")
+              payload = [code].pack("n") + force_encoding(reason.dup(), "ASCII-8BIT")
             end
             send_frame(OPCODE_CLOSE, payload, false)
         end
@@ -309,9 +309,9 @@ class WebSocket
     end
 
     def send_frame(opcode, payload, mask)
-      payload = force_encoding(payload.dup(), "UTF-8")
+      payload = force_encoding(payload.dup(), "ASCII-8BIT")
       # Setting StringIO's encoding to ASCII-8BIT.
-      buffer = StringIO.new(force_encoding("", "UTF-8"))
+      buffer = StringIO.new(force_encoding("", "ASCII-8BIT"))
       write_byte(buffer, 0x80 | opcode)
       masked_byte = mask ? 0x80 : 0x00
       if payload.bytesize <= 125
@@ -333,7 +333,7 @@ class WebSocket
     end
 
     def gets(rs = $/)
-      rs = force_encoding(rs.dup(), "UTF-8")
+      rs = force_encoding(rs.dup(), "ASCII-8BIT")
       line = @socket.gets(rs)
       $stderr.printf("recv> %p\n", line) if WebSocket.debug
       return line
@@ -351,7 +351,7 @@ class WebSocket
 
     def write(data)
       if WebSocket.debug
-        data = force_encoding(data.dup(), "UTF-8")
+        data = force_encoding(data.dup(), "ASCII-8BIT")
         data.scan(/\G(.*?(\n|\z))/n) do
           $stderr.printf("send> %p\n", $&) if !$&.empty?
         end
