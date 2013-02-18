@@ -350,6 +350,7 @@ class WebSocket
 
     def write(data)
       if WebSocket.debug
+        data = force_encoding(data.dup(), "ASCII-8BIT")
         data.scan(/\G(.*?(\n|\z))/n) do
           $stderr.printf("send> %p\n", $&) if !$&.empty?
         end
